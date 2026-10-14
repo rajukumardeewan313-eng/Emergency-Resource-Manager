@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="shieldGrad" x1="10" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E2638"/>
+      <stop offset="100%" stop-color="#0B0F19"/>
+    </linearGradient>
+    
+    <!-- Accent Border Gradient -->
+    <linearGradient id="borderGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+
+    <!-- Cross Gradient -->
+    <linearGradient id="crossGrad" x1="30" y1="20" x2="90" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+
+    <!-- Vital Pulse Gradient -->
+    <linearGradient id="vitalGrad" x1="20" y1="60" x2="100" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="40%" stop-color="#06B6D4"/>
+      <stop offset="80%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="pulseGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Ambient Outer Glow -->
+    <filter id="ambientGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Outer Glow -->
+  <rect x="20" y="20" width="80" height="80" rx="24" fill="#8B5CF6" opacity="0.2" filter="url(#ambientGlow)"/>
+
+  <!-- Outer Rounded Shield Base -->
+  <rect x="12" y="12" width="96" height="96" rx="26" fill="url(#shieldGrad)" stroke="url(#borderGrad)" stroke-width="2.5"/>
+
+  <!-- Radar / Telemetry Concentric Circles -->
+  <circle cx="60" cy="60" r="38" stroke="#273449" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.8"/>
+  <circle cx="60" cy="60" r="26" stroke="#273449" stroke-width="1" opacity="0.4"/>
+
+  <!-- Hospital Cross Structure -->
+  <!-- Vertical Bar -->
+  <rect x="50" y="28" width="20" height="64" rx="7" fill="url(#crossGrad)"/>
+  <!-- Horizontal Bar -->
+  <rect x="28" y="50" width="64" height="20" rx="7" fill="url(#crossGrad)"/>
+
+  <!-- Cross Highlight Inset -->
+  <rect x="53" y="31" width="14" height="58" rx="4" fill="#A78BFA" opacity="0.2"/>
+  <rect x="31" y="53" width="58" height="14" rx="4" fill="#A78BFA" opacity="0.2"/>
+
+  <!-- Dynamic ECG / Vital Heartbeat Line -->
+  <path d="M20 60 H38 L44 46 L50 72 L58 36 L66 82 L72 54 L78 65 L82 60 H100" 
+        stroke="url(#vitalGrad)" 
+        stroke-width="3.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        filter="url(#pulseGlow)"/>
+
+  <!-- Focal Vital Peak Points -->
+  <circle cx="58" cy="36" r="3" fill="#FFFFFF"/>
+  <circle cx="66" cy="82" r="2.8" fill="#06B6D4"/>
+  <circle cx="100" cy="60" r="2.5" fill="#22C55E"/>
+</svg>

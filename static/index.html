@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ER Command | Emergency Resource Management Operations Center</title>
+  <meta name="description" content="Real-time Clinical Decision Support and Emergency Resource Allocation System">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM - PREMIUM DARK PALETTE
+       ========================================================================== */
+    :root {
+      --bg-main: #0B0F19;
+      --bg-secondary: #111827;
+      --bg-card: #151C2C;
+      --bg-card-hover: #192338;
+      --bg-elevated: #1C2638;
+      --bg-elevated-hover: #233047;
+      --accent-primary: #8B5CF6;
+      --accent-primary-hover: #7C3AED;
+      --accent-primary-subtle: rgba(139, 92, 246, 0.15);
+      --accent-primary-glow: rgba(139, 92, 246, 0.35);
+      --accent-secondary: #06B6D4;
+      --accent-secondary-hover: #0891B2;
+      --accent-secondary-subtle: rgba(6, 182, 212, 0.15);
+      --accent-secondary-glow: rgba(6, 182, 212, 0.3);
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border-subtle: #273449;
+      --border-focus: #8B5CF6;
+      --color-success: #22C55E;
+      --color-success-subtle: rgba(34, 197, 94, 0.15);
+      --color-warning: #F59E0B;
+      --color-warning-subtle: rgba(245, 158, 11, 0.15);
+      --color-error: #EF4444;
+      --color-error-subtle: rgba(239, 68, 68, 0.15);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+      --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.25);
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Typography & Utilities */
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .text-primary { color: var(--text-primary); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-muted { color: var(--text-muted); }
+    .text-success { color: var(--color-success); }
+    .text-warning { color: var(--color-warning); }
+    .text-error { color: var(--color-error); }
+    .text-cyan { color: var(--accent-secondary); }
+    .text-purple { color: var(--accent-primary); }
+
+    /* SVG Icon Helpers */
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .icon-sm { width: 14px; height: 14px; }
+    .icon-lg { width: 20px; height: 20px; }
+    .icon-xl { width: 24px; height: 24px; }
+
+    /* ==========================================================================
+       TOP NAVIGATION & COMMAND HEADER
+       ========================================================================== */
+    header {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1680px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      filter: drop-shadow(0 0 14px rgba(139, 92, 246, 0.45));
+      transition: var(--transition);
+      display: block;
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.6));
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--accent-primary-subtle);
+      color: var(--accent-primary);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Live Telemetry Pill */
+    .telemetry-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: var(--color-success);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--color-success);
+      box-shadow: 0 0 8px var(--color-success);
+      animation: pulseAnimation 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnimation {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    /* Header Actions */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* System Clock in Header */
+    .header-clock {
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ==========================================================================
+       BUTTON SYSTEM
+       ========================================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-primary-glow);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #9466FF, #8542F5);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-elevated-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+    }
+    .btn-success:hover {
+      background: linear-gradient(135deg, #2ED869, #1DAE51);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--color-warning);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .btn-warning:hover {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: var(--color-warning);
+      color: #FCD34D;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--color-error);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: var(--color-error);
+      color: #FCA5A5;
+      transform: translateY(-1px);
+    }
+
+    .btn-simulation {
+      background-color: var(--bg-elevated);
+      color: var(--text-secondary);
+      border-color: var(--border-subtle);
+    }
+    .btn-simulation.active {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: var(--accent-secondary);
+      color: var(--accent-secondary);
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.25);
+    }
+
+    /* ==========================================================================
+       CLINICAL DECISION SUPPORT BANNER
+       ========================================================================== */
+    .cdss-notice {
+      max-width: 1680px;
+      margin: 14px auto 0;
+      padding: 0 24px;
+    }
+
+    .cdss-card {
+      background: linear-gradient(90deg, rgba(21, 28, 44, 0.95), rgba(28, 38, 56, 0.95));
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--accent-secondary);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .cdss-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cdss-icon {
+      color: var(--accent-secondary);
+      flex-shrink: 0;
+    }
+
+    .cdss-card strong {
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       METRICS / STATS RIBBON
+       ========================================================================== */
+    .stats-container {
+      max-width: 1680px;
+      margin: 16px auto 0;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Primary Hero Row: Waiting Queue, Avg Duration, Bed Capacity Side by Side */
+    .stats-primary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .stats-primary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Secondary Row: Fleet & Support Metrics */
+    .stats-secondary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 1050px) {
+      .stats-secondary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .stats-secondary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Primary Hero Metric Card */
+    .stat-card-primary {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-card-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--accent-primary));
+    }
+
+    .stat-card-primary:hover {
+      border-color: var(--card-accent, var(--accent-primary));
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md), 0 0 18px rgba(139, 92, 246, 0.2);
+    }
+
+    .stat-card-primary .stat-value {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 4px 0 2px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .stat-card-primary .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .stat-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      background-color: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .stat-icon {
+      color: var(--accent-primary);
+      opacity: 0.8;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .stat-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Mini progress bar inside metric card */
+    .stat-bar {
+      height: 4px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease-out;
+    }
+
+    /* ==========================================================================
+       MAIN WORKSPACE (DUAL COLUMN LAYOUT)
+       ========================================================================== */
+    main {
+      max-width: 1680px;
+      margin: 18px auto 32px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.05fr);
+      gap: 20px;
+      flex: 1;
+      width: 100%;
+    }
+
+    @media (max-width: 1150px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Content Panels */
+    .panel {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .panel-body {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Filter & Search Bar for Triage Queue */
+    .queue-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 190px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .input-text, .select-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      font-family: inherit;
+      font-size: 13px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      transition: var(--transition);
+    }
+
+    .select-input {
+      padding-left: 12px;
+      cursor: pointer;
+    }
+
+    .input-text:focus, .select-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-primary-subtle);
+      background-color: var(--bg-card);
+    }
+
+    /* Tabs inside Panel */
+    .panel-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      padding: 0 16px;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    /* ==========================================================================
+       PATIENT CASE CARDS (TRIAGE QUEUE)
+       ========================================================================== */
+    .case-card {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--cat-color, var(--accent-primary));
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .case-card:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      background-color: var(--bg-elevated-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .case-card.escalated {
+      border-color: var(--color-error);
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(28, 38, 56, 1) 100%);
+    }
+
+    .case-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .patient-identity {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rank-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .patient-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .patient-age {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .category-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: var(--radius-full);
+      color: #FFFFFF;
+      background-color: var(--cat-color, var(--accent-primary));
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .triage-metrics {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .escalation-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--color-error-subtle);
+      color: var(--color-error);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      font-size: 11px;
+      font-weight: 700;
+      animation: pulseAnimation 2s infinite ease-in-out;
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--accent-primary-subtle);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: var(--accent-primary);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .complaint-box {
+      font-size: 13px;
+      color: var(--text-primary);
+      background: rgba(11, 15, 25, 0.5);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .requirement-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .req-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Recommendation Box inside Patient Card */
+    .recommendation-panel {
+      background: linear-gradient(135deg, rgba(21, 28, 44, 0.8), rgba(28, 38, 56, 0.6));
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rec-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+    }
+
+    .rec-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .rec-item .badge-pill {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-primary-subtle);
+      color: var(--accent-primary);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .fallback-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Algorithmic Explainability Accordion */
+    details.why-accordion {
+      margin-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 8px;
+      font-size: 12px;
+    }
+
+    details.why-accordion summary {
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    details.why-accordion summary:hover {
+      color: var(--accent-primary);
+    }
+
+    .why-content {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .why-item {
+      color: var(--text-secondary);
+      font-size: 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .why-item-dot {
+      color: var(--accent-secondary);
+      font-weight: bold;
+    }
+
+    /* Action bar on case card */
+    .case-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+    }
+
+    .case-status-indicator {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .case-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Active / In-Ward Allocated Patients */
+    .active-card {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      transition: var(--transition);
+    }
+
+    .active-card:hover {
+      background-color: var(--bg-elevated-hover);
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    .active-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .active-resources {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .resource-chip {
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       RIGHT COLUMN: HOSPITAL RESOURCE CONTROLS
+       ========================================================================== */
+    .ward-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ward-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .ward-capacity-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+
+    .ward-capacity-badge.free {
+      background: var(--color-success-subtle);
+      color: var(--color-success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .ward-capacity-badge.full {
+      background: var(--color-error-subtle);
+      color: var(--color-error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .bed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 6px;
+    }
+
+    .bed-tile {
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+      position: relative;
+    }
+
+    .bed-tile:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-primary);
+    }
+
+    .bed-tile.free {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: #86EFAC;
+    }
+    .bed-tile.free:hover {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: var(--color-success);
+      transform: translateY(-2px);
+    }
+
+    .bed-tile.occ {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #FCA5A5;
+    }
+    .bed-tile.occ:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: var(--color-error);
+      transform: translateY(-2px);
+    }
+
+    /* Staff & Ambulance Item Lists */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .resource-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+
+    .resource-row:hover {
+      background: var(--bg-elevated-hover);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .resource-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .staff-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .resource-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .resource-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Status Toggle Badges */
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      user-select: none;
+    }
+
+    .status-badge:hover {
+      transform: translateY(-1px);
+    }
+
+    .status-badge.free {
+      background: var(--color-success-subtle);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: var(--color-success);
+    }
+    .status-badge.busy, .status-badge.dispatched {
+      background: var(--color-warning-subtle);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--color-warning);
+    }
+    .status-badge.off {
+      background: rgba(100, 116, 139, 0.15);
+      border-color: rgba(100, 116, 139, 0.3);
+      color: var(--text-secondary);
+    }
+    .status-badge.returning {
+      background: var(--accent-secondary-subtle);
+      border-color: rgba(6, 182, 212, 0.35);
+      color: var(--accent-secondary);
+    }
+
+    /* Ambulance Live Countdown Progress */
+    .ambulance-progress {
+      width: 100%;
+      height: 3px;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .ambulance-progress-bar {
+      height: 100%;
+      background: var(--accent-secondary);
+      border-radius: var(--radius-full);
+      transition: width 0.5s linear;
+    }
+
+    /* Live Telemetry Log Feed */
+    .audit-feed {
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      padding-right: 4px;
+    }
+
+    .audit-item {
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .audit-ts {
+      color: var(--accent-secondary);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .audit-text {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ==========================================================================
+       MODALS & DIALOGS
+       ========================================================================== */
+    dialog {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      width: min(580px, 94vw);
+      box-shadow: var(--shadow-lg);
+      margin: auto;
+    }
+
+    dialog::backdrop {
+      background: rgba(11, 15, 25, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .dialog-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+    }
+
+    .dialog-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dialog-close {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .dialog-close:hover {
+      color: var(--text-primary);
+      background: var(--bg-elevated);
+    }
+
+    .dialog-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .dialog-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg-secondary);
+    }
+
+    /* Form Layout */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-full {
+      grid-column: span 2;
+    }
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-full {
+        grid-column: span 1;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-primary-subtle);
+      background: var(--bg-card);
+    }
+
+    /* Quick Preset Buttons for Intake */
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .preset-chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .preset-chip:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      background: var(--accent-primary-subtle);
+    }
+
+    /* Custom Checkbox / Toggle */
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-primary);
+      cursor: pointer;
+    }
+
+    /* Category Protocol Config Row */
+    .category-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 48px auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .category-row input[type="color"] {
+      width: 44px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       TOAST NOTIFICATION SYSTEM
+       ========================================================================== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 380px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: var(--transition);
+    }
+
+    @keyframes slideInToast {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.hide {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .toast-success { border-left: 4px solid var(--color-success); }
+    .toast-error { border-left: 4px solid var(--color-error); }
+    .toast-warning { border-left: 4px solid var(--color-warning); }
+    .toast-info { border-left: 4px solid var(--accent-secondary); }
+
+    .toast-icon { flex-shrink: 0; margin-top: 2px; }
+    .toast-body { flex: 1; }
+    .toast-title { font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .toast-msg { color: var(--text-secondary); font-size: 12px; }
+
+    /* Footer disclaimer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      background-color: var(--bg-secondary);
+      padding: 16px 24px;
+      margin-top: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1680px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP HEADER & COMMAND BAR
+       ======================================================================== -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-icon-wrapper">
+          <img src="/logo.svg" alt="ER Command Logo" class="brand-logo-img">
+        </div>
+        <div>
+          <div class="brand-title">
+            ER COMMAND
+            <span class="brand-badge">PRO v2.4</span>
+          </div>
+          <div class="brand-subtitle">
+            Smart Emergency Operations &amp; Resource Decision Support
+            <span class="telemetry-indicator">
+              <span class="pulse-dot"></span>
+              LIVE TELEMETRY
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Live System Clock -->
+        <div class="header-clock mono" id="systemClock">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="clockDisplay">--:--:--</span>
+        </div>
+
+        <!-- Audio Alert Toggle -->
+        <button class="btn btn-secondary btn-sm" id="btnAudioToggle" title="Toggle audio feedback">
+          <svg class="icon icon-sm" id="audioIcon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <span id="audioLabel">Sound</span>
+        </button>
+
+        <!-- New Patient Intake Button -->
+        <button class="btn btn-primary" id="btnNewCase">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          New Emergency Case
+        </button>
+
+        <!-- Simulation Toggle Button -->
+        <button class="btn btn-simulation" id="btnSimulation">
+          <svg class="icon" id="simIcon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span id="simLabel">Simulation: OFF</span>
+        </button>
+
+        <!-- Triage Categories Config -->
+        <button class="btn btn-secondary" id="btnConfig" title="Configure Triage Protocol & Categories">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Triage Rules
+        </button>
+
+        <!-- Reset Database -->
+        <button class="btn btn-secondary" id="btnReset" title="Reset hospital database to initial state">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset DB
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CLINICAL DECISION SUPPORT BANNER
+       ======================================================================== -->
+  <div class="cdss-notice">
+    <div class="cdss-card">
+      <div class="cdss-content">
+        <svg class="icon cdss-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>
+          <strong>Clinical Decision Support Notice:</strong> Resource allocations are algorithmically recommended based on patient acuity scores, waiting duration, and real-time bed &amp; specialist availability. All final clinical decisions and patient placements require medical staff authorization.
+        </span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="this.closest('.cdss-notice').style.display='none'" title="Dismiss notice">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       METRICS & KPI RIBBON
+       ======================================================================== -->
+  <section class="stats-container">
+    <!-- Primary Hero Row: Waiting Queue, Avg Duration, Bed Capacity Side by Side in Parallel -->
+    <div class="stats-primary-grid" id="statsPrimaryGrid"></div>
+    <!-- Secondary Row: Fleet & Response Metrics -->
+    <div class="stats-secondary-grid" id="statsSecondaryGrid"></div>
+  </section>
+
+  <!-- ========================================================================
+       MAIN OPERATIONS WORKSPACE
+       ======================================================================== -->
+  <main>
+    <!-- LEFT COLUMN: TRIAGE & ALLOCATION QUEUE + ACTIVE PATIENTS -->
+    <div class="left-workspace">
+      
+      <!-- Primary Triage Queue Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-purple" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            Triage &amp; Resource Allocation Queue
+            <span class="panel-count mono" id="waitingBadge">0 Waiting</span>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div style="padding: 12px 20px 0; background: var(--bg-secondary);">
+          <div class="queue-controls">
+            <div class="search-box">
+              <svg class="icon icon-sm search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="queueSearch" class="input-text" placeholder="Search patient, complaint, ward..." autocomplete="off">
+            </div>
+            
+            <!-- Category Filter -->
+            <select id="filterCategory" class="select-input" style="width: auto; min-width: 130px;">
+              <option value="all">All Priorities</option>
+            </select>
+
+            <!-- Ward Filter -->
+            <select id="filterWard" class="select-input" style="width: auto; min-width: 120px;">
+              <option value="all">All Wards</option>
+              <option value="ICU">ICU</option>
+              <option value="ER">ER</option>
+              <option value="General">General</option>
+              <option value="Isolation">Isolation</option>
+            </select>
+
+            <!-- Sort By -->
+            <select id="sortQueue" class="select-input" style="width: auto; min-width: 140px;">
+              <option value="score_desc">Sort: Highest Score</option>
+              <option value="wait_desc">Sort: Longest Wait</option>
+              <option value="age_desc">Sort: Age (Senior first)</option>
+              <option value="name_asc">Sort: Patient Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel-body" id="waitingQueueList">
+          <!-- Dynamically populated patient triage cards -->
+        </div>
+      </div>
+
+      <!-- Active In-Ward Cases Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-cyan" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Active In-Ward Patients (Allocated)
+            <span class="panel-count mono" id="activeBadge">0 Active</span>
+          </div>
+        </div>
+        <div class="panel-body" id="activeCasesList">
+          <!-- Dynamically populated active patients -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: REAL-TIME RESOURCE LOGISTICS & AUDIT -->
+    <div class="right-workspace">
+
+      <!-- Bed Availability Matrix Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-cyan" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"></path></svg>
+            Ward &amp; Bed Capacity Matrix
+          </div>
+          <span class="text-muted" style="font-size: 11px;">Click bed to manual toggle</span>
+        </div>
+        <div class="panel-body" style="gap: 14px;" id="bedsContainer">
+          <!-- Dynamically populated ward bed grids -->
+        </div>
+      </div>
+
+      <!-- Medical Staff Roster Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-purple" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path><circle cx="20" cy="10" r="2"></circle></svg>
+            Medical Staff &amp; Specialists
+          </div>
+          <span class="text-muted" style="font-size: 11px;">Click status to cycle</span>
+        </div>
+        <div class="panel-body">
+          <div class="resource-list" id="doctorsList">
+            <!-- Dynamically populated doctors -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Ambulance Fleet Operations Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-warning" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            Ambulance Fleet Dispatch
+          </div>
+          <span class="text-muted" style="font-size: 11px;">Click status to cycle</span>
+        </div>
+        <div class="panel-body">
+          <div class="resource-list" id="ambulancesList">
+            <!-- Dynamically populated ambulances -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Dispatch & System Activity Log -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg class="icon text-secondary" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            Live Dispatch &amp; Operations Feed
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="audit-feed mono" id="auditLog">
+            <!-- Dynamically populated activity log -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       MODAL 1: REGISTER NEW EMERGENCY CASE
+       ======================================================================== -->
+  <dialog id="modalNewCase">
+    <div class="dialog-header">
+      <div class="dialog-title">
+        <img src="/logo.svg" alt="ER Command" style="width: 22px; height: 22px; border-radius: 6px; filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.4));">
+        Register Emergency Patient
+      </div>
+      <button class="dialog-close" onclick="modalNewCase.close()" title="Close dialog">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <form id="formNewCase">
+      <div class="dialog-body">
+        
+        <!-- Preset Scenario Quick Fill Chips -->
+        <div>
+          <span class="form-label">Quick Scenario Presets:</span>
+          <div class="preset-chips">
+            <button type="button" class="preset-chip" onclick="applyPreset('Nadeem Khan', 62, 'Severe crushing chest pain & diaphoresis', 'ICU', 'Cardiology', true, 'Critical')">⚡ Cardiac Alert (ICU)</button>
+            <button type="button" class="preset-chip" onclick="applyPreset('Sara Malik', 4, 'High fever, seizure, respiratory distress', 'ER', 'Pediatrics', false, 'Critical')">👶 Pediatric Emergency (ER)</button>
+            <button type="button" class="preset-chip" onclick="applyPreset('Farooq Ahmad', 36, 'Motorcycle collision, open tibia fracture', 'ER', 'Surgery', true, 'Urgent')">🚑 Trauma / Collision (ER)</button>
+            <button type="button" class="preset-chip" onclick="applyPreset('Zoya Bibi', 74, 'Severe dyspnea, suspected airborne infection', 'Isolation', 'General', false, 'Urgent')">🫁 Airborne Isolation</button>
+            <button type="button" class="preset-chip" onclick="applyPreset('Hamid Ali', 28, 'Deep laceration to forearm, bleeding controlled', 'General', 'Emergency', false, 'Semi-urgent')">🩹 Laceration (General)</button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Patient Name -->
+          <div class="form-group form-full">
+            <label class="form-label" for="caseName">Patient Full Name *</label>
+            <input type="text" id="caseName" name="name" class="form-input" required placeholder="e.g. Eleanor Vance" autocomplete="off">
+          </div>
+
+          <!-- Age -->
+          <div class="form-group">
+            <label class="form-label" for="caseAge">
+              Patient Age *
+              <span class="form-hint">&lt;5y or &gt;65y grants +5 risk bonus</span>
+            </label>
+            <input type="number" id="caseAge" name="age" class="form-input mono" min="0" max="120" required value="35">
+          </div>
+
+          <!-- Priority Category -->
+          <div class="form-group">
+            <label class="form-label" for="caseCategory">Triage Priority Category *</label>
+            <select id="caseCategory" name="category_id" class="form-input select-input" required></select>
+          </div>
+
+          <!-- Chief Complaint -->
+          <div class="form-group form-full">
+            <label class="form-label" for="caseComplaint">Chief Clinical Complaint *</label>
+            <input type="text" id="caseComplaint" name="complaint" class="form-input" required placeholder="e.g. Sudden severe chest pain radiating to left arm" autocomplete="off">
+          </div>
+
+          <!-- Required Ward -->
+          <div class="form-group">
+            <label class="form-label" for="caseNeed">Required Ward Unit *</label>
+            <select id="caseNeed" name="need" class="form-input select-input" required>
+              <option value="ICU">ICU (Intensive Care)</option>
+              <option value="ER" selected>ER (Emergency Room)</option>
+              <option value="General">General Ward</option>
+              <option value="Isolation">Isolation Unit</option>
+            </select>
+          </div>
+
+          <!-- Doctor Specialty -->
+          <div class="form-group">
+            <label class="form-label" for="caseSpecialty">Attending Specialty Needed *</label>
+            <select id="caseSpecialty" name="specialty" class="form-input select-input" required>
+              <option value="Emergency" selected>Emergency Medicine</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Surgery">General Surgery</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="General">General Medicine</option>
+            </select>
+          </div>
+
+          <!-- Ambulance Transport Toggle -->
+          <div class="form-group form-full">
+            <label class="toggle-group">
+              <input type="checkbox" id="caseTransport" name="transport">
+              <div>
+                <strong style="color: var(--text-primary);">Emergency Ambulance Transport Required</strong>
+                <div class="form-hint">Dispatches an available emergency vehicle to transport the patient</div>
+              </div>
+            </label>
+          </div>
+
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" onclick="modalNewCase.close()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btnSubmitCase">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+          Register &amp; Calculate Triage
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ========================================================================
+       MODAL 2: TRIAGE PROTOCOL & PRIORITY CATEGORIES
+       ======================================================================== -->
+  <dialog id="modalCategories">
+    <div class="dialog-header">
+      <div class="dialog-title">
+        <svg class="icon text-purple" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Triage Protocol &amp; Priority Categories
+      </div>
+      <button class="dialog-close" onclick="modalCategories.close()" title="Close dialog">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <p class="text-secondary" style="font-size: 13px;">
+        Define clinical acuity weights, maximum waiting time before automatic clinical escalation, and visual indicator colors. Higher base weights rank patients first.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 48px auto; gap: 8px; font-size: 11px; font-weight: 700; color: var(--text-muted); padding: 0 10px;">
+        <span>CATEGORY NAME</span>
+        <span>WEIGHT (BASE)</span>
+        <span>MAX WAIT (MIN)</span>
+        <span>COLOR</span>
+        <span></span>
+      </div>
+
+      <div id="categoryEditorList" style="display: flex; flex-direction: column; gap: 8px;">
+        <!-- Dynamically rendered editable category rows -->
+      </div>
+
+      <button type="button" class="btn btn-secondary btn-sm" id="btnAddCategory" style="align-self: flex-start; margin-top: 4px;">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Custom Category
+      </button>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" onclick="modalCategories.close()">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnSaveCategories">Save Protocol</button>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================
+       MODAL 3: CONFIRM DATABASE RESET
+       ======================================================================== -->
+  <dialog id="modalResetConfirm">
+    <div class="dialog-header">
+      <div class="dialog-title text-warning">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Confirm Database Reset
+      </div>
+      <button class="dialog-close" onclick="modalResetConfirm.close()" title="Close dialog">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <p style="font-size: 13px; color: var(--text-secondary);">
+        Are you sure you want to re-initialize the database? This will clear all active and waiting patient cases and reload default simulated hospital beds, physicians, and ambulances.
+      </p>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" onclick="modalResetConfirm.close()">Cancel</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmReset">Reset Everything</button>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================
+       TOAST CONTAINER
+       ======================================================================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer>
+    <div class="footer-inner">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <img src="/logo.svg" alt="ER Command" style="width: 20px; height: 20px; border-radius: 4px;">
+        <strong>ER Command Operations Platform</strong> · Production-Grade Emergency Resource Management System
+      </div>
+      <div>
+        Architecture: Flask REST API + SQLite · Deterministic Greedy Triage Allocator · Non-Invasive CDSS
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       APPLICATION LOGIC & REACTIVE UI CONTROLLER
+       ======================================================================== -->
+  <script>
+    /* Global State & DOM Bindings */
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    const escapeHTML = str => String(str).replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
+
+    let appState = null;
+    let lastFetched = 0;
+    let simulationTimer = null;
+    let audioEnabled = localStorage.getItem('er_audio') !== 'false';
+
+    // Format minutes nicely
+    function formatMinutes(m) {
+      if (m < 1) return Math.round(m * 60) + 's';
+      return Math.round(m) + ' min';
+    }
+
+    // Web Audio Synthesizer for subtle non-intrusive sound cues
+    function playBeep(type = 'click') {
+      if (!audioEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        if (type === 'approve') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'alert') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(700, now);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (e) {
+        // AudioContext might be blocked until user gesture, ignore silently
+      }
+    }
+
+    // Toast notification manager
+    function showToast(title, message, type = 'info') {
+      const container = $('#toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      let iconSvg = '';
+      if (type === 'success') {
+        iconSvg = `<svg class="icon text-success toast-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      } else if (type === 'error') {
+        iconSvg = `<svg class="icon text-error toast-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+      } else if (type === 'warning') {
+        iconSvg = `<svg class="icon text-warning toast-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>`;
+      } else {
+        iconSvg = `<svg class="icon text-cyan toast-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      }
+
+      toast.innerHTML = `
+        ${iconSvg}
+        <div class="toast-body">
+          <div class="toast-title">${escapeHTML(title)}</div>
+          <div class="toast-msg">${escapeHTML(message)}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+      }, 3800);
+    }
+
+    // Audio button UI sync
+    function updateAudioButton() {
+      const icon = $('#audioIcon');
+      const label = $('#audioLabel');
+      if (audioEnabled) {
+        label.textContent = 'Sound ON';
+        icon.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>`;
+      } else {
+        label.textContent = 'Muted';
+        icon.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
+      }
+    }
+    $('#btnAudioToggle').onclick = () => {
+      audioEnabled = !audioEnabled;
+      localStorage.setItem('er_audio', audioEnabled);
+      updateAudioButton();
+      playBeep('click');
+    };
+    updateAudioButton();
+
+    // System Clock update
+    setInterval(() => {
+      const d = new Date();
+      $('#clockDisplay').textContent = d.toTimeString().split(' ')[0];
+    }, 1000);
+
+    // API Helper
+    async function api(path, method = 'GET', body = null) {
+      try {
+        const options = {
+          method,
+          headers: { 'Content-Type': 'application/json' }
+        };
+        if (body) options.body = JSON.stringify(body);
+        
+        const res = await fetch('/api' + path, options);
+        const data = await res.json().catch(() => ({}));
+        
+        if (!res.ok) {
+          const errMsg = data.error || 'Server request failed';
+          showToast('Action Failed', errMsg, 'error');
+          return null;
+        }
+        return data;
+      } catch (err) {
+        showToast('Connection Error', 'Cannot reach hospital server at /api. Check if app.py is running.', 'error');
+        return null;
+      }
+    }
+
+    // Quick Action Handler for data-action buttons
+    async function triggerAction(endpoint, successTitle = 'Action Complete', successMsg = '') {
+      playBeep('click');
+      const res = await api(endpoint, 'POST');
+      if (res && res.ok !== false) {
+        if (successMsg) showToast(successTitle, successMsg, 'success');
+        await loadState();
+      }
+    }
+
+    // Calculate dynamic waiting minutes based on server reference timestamp
+    function getCaseWaitedMinutes(c) {
+      if (!appState || !appState.now) return 0;
+      const elapsedSinceFetch = (Date.now() - lastFetched) / 1000;
+      return Math.max(0, (appState.now - c.created_at + elapsedSinceFetch) / 60);
+    }
+
+    // Find category object
+    function getCategory(catId) {
+      if (!appState || !appState.cats) return { name: 'Unknown', color: '#8B5CF6', max_wait: 30, weight: 10 };
+      return appState.cats.find(c => c.id === catId) || appState.cats[appState.cats.length - 1];
+    }
+
+    // Preset helper for modal intake
+    window.applyPreset = function(name, age, complaint, need, specialty, transport, catName) {
+      $('#caseName').value = name;
+      $('#caseAge').value = age;
+      $('#caseComplaint').value = complaint;
+      $('#caseNeed').value = need;
+      $('#caseSpecialty').value = specialty;
+      $('#caseTransport').checked = transport;
+
+      if (appState && appState.cats) {
+        const found = appState.cats.find(c => c.name.toLowerCase() === catName.toLowerCase());
+        if (found) $('#caseCategory').value = found.id;
+      }
+    };
+
+    /* ========================================================================
+       RENDER FUNCTIONS
+       ======================================================================== */
+
+    // 1. Render Metrics / Stats Ribbon (Primary Trio Parallel Side-by-Side + Secondary Fleet)
+    function renderStats() {
+      const t = appState.stats;
+      const waiting = t.waiting;
+      const topWaiting = t.top_priority_waiting;
+      const bedsOcc = t.beds_total - t.beds_free;
+      const bedPct = Math.round((bedsOcc / (t.beds_total || 1)) * 100);
+
+      // Primary Hero Trio (Parallel Side-by-Side): Waiting Queue, Avg Duration, Bed Capacity
+      const primaryItems = [
+        {
+          label: 'Waiting Queue',
+          value: `${waiting} <span style="font-size:15px;font-weight:500;color:var(--text-secondary);">cases</span>`,
+          subtext: `${topWaiting} top acuity pending`,
+          accent: 'var(--accent-primary)',
+          color: waiting > 10 ? 'var(--color-error)' : (waiting > 4 ? 'var(--color-warning)' : 'var(--text-primary)'),
+          icon: `<svg class="icon stat-icon" style="color:var(--accent-primary);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>`,
+          barPct: Math.min(100, waiting * 10)
+        },
+        {
+          label: 'Avg Duration',
+          value: formatMinutes(t.avg_wait_min),
+          subtext: 'Average triage wait duration',
+          accent: 'var(--accent-secondary)',
+          color: t.avg_wait_min > 30 ? 'var(--color-error)' : (t.avg_wait_min > 15 ? 'var(--color-warning)' : 'var(--color-success)'),
+          icon: `<svg class="icon stat-icon" style="color:var(--accent-secondary);" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`,
+          barPct: Math.min(100, (t.avg_wait_min / 60) * 100)
+        },
+        {
+          label: 'Bed Capacity',
+          value: `${t.beds_free} <span style="font-size:15px;color:var(--text-secondary);font-weight:500;">/ ${t.beds_total} free</span>`,
+          subtext: `${bedPct}% occupied across all wards`,
+          accent: 'var(--color-success)',
+          color: t.beds_free <= 3 ? 'var(--color-error)' : 'var(--text-primary)',
+          icon: `<svg class="icon stat-icon" style="color:var(--color-success);" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"></path></svg>`,
+          barPct: bedPct
+        }
+      ];
+
+      const secondaryItems = [
+        {
+          label: 'Physicians On-Duty',
+          value: `${t.doctors_free} <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">/ ${t.doctors_total} avail</span>`,
+          subtext: `${t.doctors_total - t.doctors_free} engaged`,
+          color: t.doctors_free === 0 ? 'var(--color-error)' : 'var(--text-primary)',
+          icon: `<svg class="icon stat-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>`,
+          barPct: Math.round((t.doctors_free / (t.doctors_total || 1)) * 100)
+        },
+        {
+          label: 'Ambulance Fleet',
+          value: `${t.ambulances_free} <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">/ ${t.ambulances_total} ready</span>`,
+          subtext: `${t.ambulances_total - t.ambulances_free} in transit`,
+          color: t.ambulances_free === 0 ? 'var(--color-error)' : 'var(--text-primary)',
+          icon: `<svg class="icon stat-icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>`,
+          barPct: Math.round((t.ambulances_free / (t.ambulances_total || 1)) * 100)
+        },
+        {
+          label: 'Avg Response Time',
+          value: formatMinutes(t.avg_time_to_allocation_min),
+          subtext: 'Intake to placement',
+          color: 'var(--text-primary)',
+          icon: `<svg class="icon stat-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`,
+          barPct: Math.min(100, (t.avg_time_to_allocation_min / 45) * 100)
+        },
+        {
+          label: 'Resolved Cases',
+          value: t.completed,
+          subtext: 'Discharged / completed',
+          color: 'var(--color-success)',
+          icon: `<svg class="icon stat-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+          barPct: 100
+        }
+      ];
+
+      const pGrid = $('#statsPrimaryGrid');
+      if (pGrid) {
+        pGrid.innerHTML = primaryItems.map(it => `
+          <div class="stat-card-primary" style="--card-accent: ${it.accent};">
+            <div class="stat-header">
+              <span class="stat-label">${it.label}</span>
+              ${it.icon}
+            </div>
+            <div class="stat-value" style="color: ${it.color};">${it.value}</div>
+            <div class="stat-subtext">${it.subtext}</div>
+            <div class="stat-bar" style="height: 5px;">
+              <div class="stat-bar-fill" style="width: ${it.barPct}%; background: ${it.accent};"></div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const sGrid = $('#statsSecondaryGrid');
+      if (sGrid) {
+        sGrid.innerHTML = secondaryItems.map(it => `
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">${it.label}</span>
+              ${it.icon}
+            </div>
+            <div class="stat-value" style="color: ${it.color}; font-size: 20px;">${it.value}</div>
+            <div class="stat-subtext">${it.subtext}</div>
+            <div class="stat-bar">
+              <div class="stat-bar-fill" style="width: ${it.barPct}%;"></div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // 2. Render Triage Queue
+    function renderQueue() {
+      const allWaiting = appState.cases.filter(c => c.status === 'waiting');
+      const plans = appState.plans || {};
+      $('#waitingBadge').textContent = `${allWaiting.length} In Queue`;
+
+      // Filter and search
+      const query = ($('#queueSearch').value || '').trim().toLowerCase();
+      const catFilter = $('#filterCategory').value;
+      const wardFilter = $('#filterWard').value;
+      const sortMode = $('#sortQueue').value;
+
+      let filtered = allWaiting.filter(c => {
+        if (catFilter !== 'all' && String(c.category_id) !== catFilter) return false;
+        if (wardFilter !== 'all' && c.need !== wardFilter) return false;
+        if (query) {
+          const matchName = c.name.toLowerCase().includes(query);
+          const matchComplaint = c.complaint.toLowerCase().includes(query);
+          const matchWard = c.need.toLowerCase().includes(query);
+          const matchSpecialty = c.specialty.toLowerCase().includes(query);
+          if (!matchName && !matchComplaint && !matchWard && !matchSpecialty) return false;
+        }
+        return true;
+      });
+
+      // Sorting
+      filtered.sort((a, b) => {
+        const planA = plans[a.id] || { score: 0 };
+        const planB = plans[b.id] || { score: 0 };
+        if (sortMode === 'score_desc') return planB.score - planA.score;
+        if (sortMode === 'wait_desc') return b.created_at - a.created_at; // smaller created_at is older
+        if (sortMode === 'age_desc') return b.age - a.age;
+        if (sortMode === 'name_asc') return a.name.localeCompare(b.name);
+        return planB.score - planA.score;
+      });
+
+      if (filtered.length === 0) {
+        if (allWaiting.length === 0) {
+          $('#waitingQueueList').innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <svg class="icon icon-xl text-success" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div style="font-weight: 700; color: var(--text-primary); font-size: 15px;">Queue Clear - All Emergency Patients Allocated</div>
+              <div style="max-width: 320px; font-size: 13px;">No waiting cases in the triage buffer. Register a new emergency or toggle simulation to generate test cases.</div>
+              <button class="btn btn-primary btn-sm" onclick="$('#btnNewCase').click()" style="margin-top: 8px;">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Register Emergency Case
+              </button>
+            </div>
+          `;
+        } else {
+          $('#waitingQueueList').innerHTML = `
+            <div class="empty-state">
+              <div style="font-weight: 600; color: var(--text-secondary); font-size: 14px;">No patients match the active filters</div>
+              <button class="btn btn-secondary btn-sm" onclick="$('#queueSearch').value=''; $('#filterCategory').value='all'; $('#filterWard').value='all'; renderQueue();">Clear Filters</button>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      $('#waitingQueueList').innerHTML = filtered.map(c => {
+        const k = getCategory(c.category_id);
+        const r = plans[c.id] || { rank: '-', score: 0, why: [], bed: null, doctor: null, ambulance: null };
+        const waitedMin = getCaseWaitedMinutes(c);
+        const isEscalated = k.max_wait > 0 ? (waitedMin > k.max_wait) : (waitedMin > 2);
+        const isFallbackWard = r.bed && r.bed.ward !== c.need;
+
+        return `
+          <div class="case-card ${isEscalated ? 'escalated' : ''}" style="--cat-color: ${k.color};">
+            <!-- Header Identity -->
+            <div class="case-top-row">
+              <div class="patient-identity">
+                <span class="rank-pill mono">#${r.rank}</span>
+                <span class="patient-name">${escapeHTML(c.name)}</span>
+                <span class="patient-age">(${c.age}y)</span>
+                <span class="category-badge">${escapeHTML(k.name)}</span>
+                ${isEscalated ? `
+                  <span class="escalation-pill" title="Patient has waited longer than triage maximum threshold of ${k.max_wait}m">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+                    ESCALATED (${formatMinutes(waitedMin)})
+                  </span>
+                ` : ''}
+              </div>
+
+              <div class="triage-metrics">
+                <span class="text-secondary mono">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  ${formatMinutes(waitedMin)} waited
+                </span>
+                <span class="score-badge mono" title="Dynamic triage priority score">
+                  Score: ${r.score}
+                </span>
+              </div>
+            </div>
+
+            <!-- Chief Complaint & Requirements -->
+            <div class="complaint-box">
+              <svg class="icon icon-sm text-purple" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <span><strong>Complaint:</strong> ${escapeHTML(c.complaint)}</span>
+            </div>
+
+            <div class="requirement-tags">
+              <span class="req-tag">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"></path></svg>
+                Target Ward: <strong>${c.need}</strong>
+              </span>
+              <span class="req-tag">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                Specialty: <strong>${c.specialty}</strong>
+              </span>
+              ${c.transport ? `
+                <span class="req-tag" style="border-color: rgba(6, 182, 212, 0.4); color: var(--accent-secondary);">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                  Ambulance Transport Required
+                </span>
+              ` : `
+                <span class="req-tag text-muted">
+                  Self / Walk-in Arrival
+                </span>
+              `}
+            </div>
+
+            <!-- Algorithm Recommendation Panel -->
+            <div class="recommendation-panel">
+              <div class="rec-header">
+                <span>Algorithmic Resource Recommendation</span>
+                <span class="mono" style="font-size: 10px; color: var(--text-muted);">Deterministic CDSS</span>
+              </div>
+
+              <div class="rec-grid">
+                <!-- Bed Allocation -->
+                <div class="rec-item">
+                  <svg class="icon icon-sm text-cyan" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"></path></svg>
+                  ${r.bed ? `
+                    <span>Bed: <strong class="text-primary">${r.bed.id}</strong> (${r.bed.ward})</span>
+                    ${isFallbackWard ? `<span class="fallback-tag">Ward Fallback</span>` : ''}
+                  ` : `
+                    <span class="text-error" style="font-weight:600;">⚠️ No bed available</span>
+                  `}
+                </div>
+
+                <!-- Doctor Allocation -->
+                <div class="rec-item">
+                  <svg class="icon icon-sm text-purple" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                  ${r.doctor ? `
+                    <span>MD: <strong class="text-primary">${escapeHTML(r.doctor.name)}</strong> (${r.doctor.specialty})</span>
+                  ` : `
+                    <span class="text-error" style="font-weight:600;">⚠️ No doctor free</span>
+                  `}
+                </div>
+
+                <!-- Ambulance Allocation -->
+                ${c.transport ? `
+                  <div class="rec-item">
+                    <svg class="icon icon-sm text-warning" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    ${r.ambulance ? `
+                      <span>Transit: <strong class="text-primary">${r.ambulance}</strong></span>
+                    ` : `
+                      <span class="text-error" style="font-weight:600;">⚠️ No ambulance free</span>
+                    `}
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Mathematical Transparency Accordion -->
+              <details class="why-accordion">
+                <summary>
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  Why this recommendation? (Mathematical Score &amp; Rules Breakdown)
+                </summary>
+                <div class="why-content">
+                  ${r.why.map(item => `
+                    <div class="why-item">
+                      <span class="why-item-dot">•</span>
+                      <span>${escapeHTML(item)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </details>
+            </div>
+
+            <!-- Staff Confirmation Buttons -->
+            <div class="case-actions">
+              <div class="case-status-indicator">
+                <svg class="icon icon-sm text-muted" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                Awaiting staff clinical sign-off
+              </div>
+              
+              <div class="case-btn-group">
+                <!-- Reject / Next Best Button -->
+                <button class="btn btn-warning btn-sm" 
+                  data-action="/cases/${c.id}/reject" 
+                  data-title="Bed Excluded" 
+                  data-msg="Staff rejected bed for ${escapeHTML(c.name)}. Recalculating next best option."
+                  ${r.bed ? '' : 'disabled'}
+                  title="Reject currently recommended bed and recalculate next best option">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                  Reject / Next Best
+                </button>
+
+                <!-- Approve Button -->
+                <button class="btn btn-success btn-sm" 
+                  data-action="/cases/${c.id}/approve" 
+                  data-title="Allocation Approved" 
+                  data-msg="Patient ${escapeHTML(c.name)} assigned to ${r.bed ? r.bed.id : ''}"
+                  ${r.bed ? '' : 'disabled'}
+                  title="Approve recommended resources and admit patient">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approve Allocation
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 3. Render Active In-Ward Patients
+    function renderActiveCases() {
+      const active = appState.cases.filter(c => c.status === 'allocated');
+      $('#activeBadge').textContent = `${active.length} In-Ward`;
+
+      if (active.length === 0) {
+        $('#activeCasesList').innerHTML = `
+          <div class="empty-state" style="padding: 24px 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">No currently allocated patients under active treatment.</div>
+          </div>
+        `;
+        return;
+      }
+
+      $('#activeCasesList').innerHTML = active.map(c => {
+        const k = getCategory(c.category_id);
+        const doc = appState.doctors.find(d => d.id === c.doctor_id);
+
+        return `
+          <div class="active-card">
+            <div class="active-info">
+              <span class="category-badge" style="background-color: ${k.color}; font-size: 10px;">${escapeHTML(k.name)}</span>
+              <strong style="color: var(--text-primary); font-size: 14px;">${escapeHTML(c.name)}</strong>
+              <span class="text-secondary" style="font-size: 12px;">(${c.age}y)</span>
+
+              <div class="active-resources">
+                <span class="resource-chip text-cyan">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"></path></svg>
+                  Bed: <strong>${c.bed_id}</strong>
+                </span>
+
+                ${doc ? `
+                  <span class="resource-chip text-purple">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                    ${escapeHTML(doc.name)}
+                  </span>
+                ` : ''}
+
+                ${c.ambulance_id ? `
+                  <span class="resource-chip text-warning">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    ${c.ambulance_id}
+                  </span>
+                ` : ''}
+              </div>
+            </div>
+
+            <div>
+              <button class="btn btn-secondary btn-sm" 
+                data-action="/cases/${c.id}/complete" 
+                data-title="Patient Discharged" 
+                data-msg="Case for ${escapeHTML(c.name)} completed. Resources freed.">
+                <svg class="icon icon-sm text-success" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Discharge &amp; Release
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 4. Render Ward Beds Matrix
+    function renderBeds() {
+      const wards = ['ICU', 'ER', 'General', 'Isolation'];
+      const container = $('#bedsContainer');
+
+      container.innerHTML = wards.map(wardName => {
+        const beds = appState.beds.filter(b => b.ward === wardName);
+        const freeCount = beds.filter(b => b.status === 'free').length;
+        const total = beds.length;
+        const occPct = Math.round(((total - freeCount) / (total || 1)) * 100);
+
+        return `
+          <div class="ward-block">
+            <div class="ward-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: var(--text-primary); font-weight: 700;">${wardName} Ward</span>
+                <span class="text-secondary mono" style="font-size: 11px;">(${beds.length} beds)</span>
+              </div>
+              <span class="ward-capacity-badge mono ${freeCount > 0 ? 'free' : 'full'}">
+                ${freeCount > 0 ? `${freeCount} Available` : 'AT CAPACITY'}
+              </span>
+            </div>
+
+            <!-- Ward Occupancy Bar -->
+            <div class="stat-bar" style="margin-top: 2px;">
+              <div class="stat-bar-fill" style="width: ${occPct}%; ${occPct > 85 ? 'background: var(--color-error);' : ''}"></div>
+            </div>
+
+            <!-- Grid of Bed Tiles -->
+            <div class="bed-grid" style="margin-top: 6px;">
+              ${beds.map(b => {
+                const bedNum = b.id.split('-')[1] || b.id;
+                const isFree = b.status === 'free';
+                return `
+                  <button class="bed-tile ${b.status}" 
+                    data-action="/beds/${b.id}/toggle" 
+                    title="Bed ${b.id} (${isFree ? 'Available' : 'Occupied'}). Click to toggle manually.">
+                    <span class="mono">${bedNum}</span>
+                    <span style="font-size: 9px; opacity: 0.8;">${isFree ? 'FREE' : 'OCC'}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 5. Render Doctors Roster
+    function renderDoctors() {
+      const list = $('#doctorsList');
+      list.innerHTML = appState.doctors.map(d => {
+        const initials = d.name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').substring(0, 2);
+        return `
+          <div class="resource-row">
+            <div class="resource-meta">
+              <div class="staff-avatar">${initials}</div>
+              <div>
+                <div class="resource-name">${escapeHTML(d.name)}</div>
+                <div class="resource-sub">${escapeHTML(d.specialty)} Specialist</div>
+              </div>
+            </div>
+
+            <button class="status-badge ${d.status}" 
+              data-action="/doctors/${d.id}/cycle" 
+              title="Click to cycle status (Available -> In Treatment -> Off Duty)">
+              <span class="pulse-dot" style="width: 5px; height: 5px; ${d.status === 'free' ? 'background:var(--color-success)' : (d.status === 'busy' ? 'background:var(--color-warning)' : 'background:var(--text-muted)')}"></span>
+              ${d.status === 'free' ? 'Available' : (d.status === 'busy' ? 'In Treatment' : 'Off-Duty')}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 6. Render Ambulance Fleet
+    function renderAmbulances() {
+      const list = $('#ambulancesList');
+      list.innerHTML = appState.ambulances.map(a => {
+        let statusLabel = 'Standby / Free';
+        if (a.status === 'dispatched') statusLabel = 'Dispatched';
+        if (a.status === 'returning') statusLabel = 'Returning to Base';
+
+        return `
+          <div class="resource-row">
+            <div class="resource-meta">
+              <svg class="icon text-cyan" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              <div>
+                <div class="resource-name mono">${a.id}</div>
+                <div class="resource-sub">Rapid Response Unit</div>
+              </div>
+            </div>
+
+            <button class="status-badge ${a.status}" 
+              data-action="/ambulances/${a.id}/cycle" 
+              title="Click to cycle vehicle status (Standby -> Dispatched -> Returning)">
+              ${statusLabel}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 7. Render Activity Feed
+    function renderAuditLog() {
+      const feed = $('#auditLog');
+      if (!appState.log || appState.log.length === 0) {
+        feed.innerHTML = '<div class="text-muted" style="padding: 10px;">No telemetry logged yet.</div>';
+        return;
+      }
+
+      feed.innerHTML = appState.log.map(item => {
+        const timeStr = new Date(item.ts * 1000).toLocaleTimeString();
+        return `
+          <div class="audit-item">
+            <span class="audit-ts mono">${timeStr}</span>
+            <span class="audit-text">${escapeHTML(item.msg)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Master Render Routine
+    function renderUI() {
+      if (!appState) return;
+      renderStats();
+      renderQueue();
+      renderActiveCases();
+      renderBeds();
+      renderDoctors();
+      renderAmbulances();
+      renderAuditLog();
+    }
+
+    // Polling / Load state from API
+    async function loadState() {
+      const data = await api('/state');
+      if (data) {
+        appState = data;
+        lastFetched = Date.now();
+        renderUI();
+      }
+    }
+
+    /* ========================================================================
+       EVENT HANDLERS & MODAL CONTROLLERS
+       ======================================================================== */
+
+    // Delegated click listener for action buttons
+    document.addEventListener('click', async e => {
+      const target = e.target.closest('[data-action]');
+      if (!target || target.disabled) return;
+
+      const endpoint = target.dataset.action;
+      const title = target.dataset.title || 'Action Completed';
+      const msg = target.dataset.msg || '';
+
+      await triggerAction(endpoint, title, msg);
+    });
+
+    // Queue Search & Filter listeners
+    $('#queueSearch').addEventListener('input', () => renderQueue());
+    $('#filterCategory').addEventListener('change', () => renderQueue());
+    $('#filterWard').addEventListener('change', () => renderQueue());
+    $('#sortQueue').addEventListener('change', () => renderQueue());
+
+    // 1. New Emergency Case Modal
+    $('#btnNewCase').onclick = () => {
+      playBeep('click');
+      const catSelect = $('#caseCategory');
+      if (appState && appState.cats) {
+        catSelect.innerHTML = appState.cats.map(c => `
+          <option value="${c.id}">${escapeHTML(c.name)} (Weight: ${c.weight})</option>
+        `).join('');
+      }
+      // Populate category filter dropdown if empty
+      const filterCat = $('#filterCategory');
+      if (filterCat.children.length <= 1 && appState && appState.cats) {
+        filterCat.innerHTML = `<option value="all">All Priorities</option>` +
+          appState.cats.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
+      }
+
+      $('#modalNewCase').showModal();
+    };
+
+    $('#formNewCase').onsubmit = async e => {
+      e.preventDefault();
+      const f = e.target;
+      const payload = {
+        name: f.name.value.trim(),
+        age: parseInt(f.age.value, 10),
+        complaint: f.complaint.value.trim(),
+        category_id: parseInt(f.category_id.value, 10),
+        need: f.need.value,
+        specialty: f.specialty.value,
+        transport: f.transport.checked
+      };
+
+      const res = await api('/cases', 'POST', payload);
+      if (res && res.id) {
+        playBeep('approve');
+        showToast('Patient Registered', `Admitted ${payload.name} to triage queue. ID: #${res.id}`, 'success');
+        f.reset();
+        $('#modalNewCase').close();
+        await loadState();
+      }
+    };
+
+    // 2. Triage Categories Config Modal
+    function renderCategoryEditor() {
+      const container = $('#categoryEditorList');
+      if (!appState || !appState.cats) return;
+
+      container.innerHTML = appState.cats.map((c, index) => `
+        <div class="category-row" data-id="${c.id || 0}">
+          <input type="text" class="form-input" value="${escapeHTML(c.name)}" placeholder="Category Name" required>
+          <input type="number" class="form-input mono" value="${c.weight}" min="0" max="500" step="1" required title="Base Priority Score">
+          <input type="number" class="form-input mono" value="${c.max_wait}" min="0" max="300" step="1" required title="Max wait in minutes before automatic escalation">
+          <input type="color" value="${c.color || '#8B5CF6'}" title="Acuity color code">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.category-row').remove()" title="Remove category">
+            <svg class="icon icon-sm text-error" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    $('#btnConfig').onclick = () => {
+      playBeep('click');
+      renderCategoryEditor();
+      $('#modalCategories').showModal();
+    };
+
+    $('#btnAddCategory').onclick = () => {
+      const container = $('#categoryEditorList');
+      const row = document.createElement('div');
+      row.className = 'category-row';
+      row.dataset.id = '0';
+      row.innerHTML = `
+        <input type="text" class="form-input" value="Custom Priority" placeholder="Category Name" required>
+        <input type="number" class="form-input mono" value="45" min="0" max="500" step="1" required>
+        <input type="number" class="form-input mono" value="30" min="0" max="300" step="1" required>
+        <input type="color" value="#06B6D4">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.category-row').remove()">
+          <svg class="icon icon-sm text-error" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      `;
+      container.appendChild(row);
+    };
+
+    $('#btnSaveCategories').onclick = async () => {
+      const rows = $$('#categoryEditorList .category-row');
+      const items = [];
+      for (const row of rows) {
+        const inputs = row.querySelectorAll('input');
+        const name = inputs[0].value.trim();
+        const weight = parseFloat(inputs[1].value);
+        const max_wait = parseFloat(inputs[2].value);
+        const color = inputs[3].value;
+
+        if (!name) {
+          showToast('Validation Error', 'Category name cannot be empty', 'warning');
+          return;
+        }
+
+        const id = parseInt(row.dataset.id, 10);
+        items.push({
+          id: id > 0 ? id : null,
+          name,
+          weight,
+          max_wait,
+          color
+        });
+      }
+
+      const res = await api('/categories', 'PUT', items);
+      if (res && res.ok) {
+        showToast('Protocol Updated', 'Triage priority rules saved successfully.', 'success');
+        $('#modalCategories').close();
+        await loadState();
+      }
+    };
+
+    // 3. Reset Database Modal
+    $('#btnReset').onclick = () => {
+      playBeep('click');
+      $('#modalResetConfirm').showModal();
+    };
+
+    $('#btnConfirmReset').onclick = async () => {
+      playBeep('click');
+      const res = await api('/reset', 'POST');
+      if (res && res.ok) {
+        showToast('System Reset', 'Emergency database re-initialized with standard simulated records.', 'success');
+        $('#modalResetConfirm').close();
+        await loadState();
+      }
+    };
+
+    // 4. Live Simulation Toggle
+    $('#btnSimulation').onclick = () => {
+      playBeep('click');
+      const btn = $('#btnSimulation');
+      const label = $('#simLabel');
+      const icon = $('#simIcon');
+
+      if (simulationTimer) {
+        clearInterval(simulationTimer);
+        simulationTimer = null;
+        btn.classList.remove('active');
+        label.textContent = 'Simulation: OFF';
+        icon.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
+        showToast('Simulation Paused', 'Real-time intake generator stopped.', 'info');
+      } else {
+        simulationTimer = setInterval(async () => {
+          await api('/simulate/tick', 'POST');
+          await loadState();
+        }, 5000);
+        btn.classList.add('active');
+        label.textContent = 'Simulation: ON (5s)';
+        icon.innerHTML = `<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>`;
+        showToast('Simulation Active', 'Hospital scenario simulation ticking every 5 seconds.', 'success');
+      }
+    };
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', e => {
+      // Don't trigger shortcuts if inside an active text input or textarea
+      const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+      if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        $('#btnNewCase').click();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        $('#btnSimulation').click();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        $('#btnConfig').click();
+      }
+    });
+
+    // Populate Category filter initially when state loads
+    async function init() {
+      await loadState();
+      if (appState && appState.cats) {
+        const filterCat = $('#filterCategory');
+        filterCat.innerHTML = `<option value="all">All Priorities</option>` +
+          appState.cats.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
+      }
+    }
+
+    // Live state polling every 3 seconds
+    setInterval(loadState, 3000);
+    init();
+  </script>
+</body>
+</html>
